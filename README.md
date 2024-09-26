@@ -1,6 +1,51 @@
 # MISB ST 0601 KLV Parser
 
-This repository provides a Go package for parsing MISB ST 0601 (rev 19) KLV metadata streams. The parser processes KLV (Key-Length-Value) metadata and outputs structured data that can be easily processed or converted to other formats, such as XML.
+This repository offers a Go package for parsing MISB ST 0601 (rev 19) KLV metadata streams, a key standard used in the geospatial and intelligence community, especially by organizations like the National Geospatial-Intelligence Agency (NGA). The MISB ST 0601 standard defines a set of metadata elements embedded in video streams from airborne platforms such as drones and reconnaissance aircraft. These elements include critical data such as latitude, longitude, altitude, and mission-specific information.
+
+The parser processes KLV (Key-Length-Value) metadata, an encoding method for transmitting this information. It outputs the structured data in an easy-to-use format, making it suitable for further analysis or conversion into other formats, such as XML, for interoperability with other systems or storage.
+
+## Quick Start Example
+
+1. **Install Golang**:  
+   Ensure you have Go (version 1.12 or later) installed. Follow the installation instructions [here](https://go.dev/doc/install).
+
+2. **Download test data**:  
+   Download the example data by running the following command:
+   ```bash
+   wget https://github.com/paretech/klvdata/blob/master/data/DynamicConstantMISMMSPacketData.bin
+   ```
+3. **Run the example:** 
+   Use the test data to run the example code, which prints KLV data as XML:
+   ``` bash
+   cat DynamicOnlyMISMMSPacketData.bin | go run klvdata/examples/example_print_xml.go 
+   ```
+
+### Expected output:
+```xml
+<KLVTags>
+  <Tag ID="1">
+    <Name>Checksum</Name>
+    <Value>51280</Value>
+    <Unit>None</Unit>
+  </Tag>
+  <Tag ID="2">
+    <Name>Precision Time Stamp</Name>
+    <Value>1.231798102e+15</Value>
+    <Unit>µs</Unit>
+  </Tag>
+  <Tag ID="5">
+    <Name>Platform Heading Angle</Name>
+    <Value>159.97436484321355</Value>
+    <Unit>°</Unit>
+  </Tag>
+  <Tag ID="6">
+    <Name>Platform Pitch Angle</Name>
+    <Value>-0.4315317239906003</Value>
+    <Unit>°</Unit>
+  </Tag>
+</KLVTags>
+```
+
 
 ## Step-by-Step Walkthrough
 ### 1. Capturing the KLV Stream Using FFmpeg
