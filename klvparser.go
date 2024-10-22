@@ -128,14 +128,15 @@ func (p *KLVParser) processTag(tag uint8, value []byte) {
 			return extractScaledUint16(val, 360.0/65535.0)
 		})
 	case 6:
-		// Tag 6: Platform Pitch Angle
+		// Platform Pitch Angle: -20 to 20 degrees
 		processValue(int(tag), value, func(val []byte) *float64 {
-			return extractScaledInt16(val, 20.0/32767.0)
+			return extractScaledInt16(val, 40.0/65535.0)
 		})
+
 	case 7:
-		// Tag 7: Platform Roll Angle
+		// Platform Roll Angle: -20 to 20 degrees
 		processValue(int(tag), value, func(val []byte) *float64 {
-			return extractScaledInt16(val, 20.0/32767.0)
+			return extractScaledInt16(val, 40.0/65535.0)
 		})
 	case 8:
 		// Tag 8: Platform True Airspeed
@@ -179,12 +180,12 @@ func (p *KLVParser) processTag(tag uint8, value []byte) {
 	case 13:
 		// Tag 13: Sensor Latitude
 		processValue(int(tag), value, func(val []byte) *float64 {
-			return extractScaledInt32(val, 90.0/(1<<31-1))
+			return extractScaledInt32(val, 180.0/(1<<31-1))
 		})
 	case 14:
 		// Tag 14: Sensor Longitude
 		processValue(int(tag), value, func(val []byte) *float64 {
-			return extractScaledInt32(val, 180.0/(1<<31-1))
+			return extractScaledInt32(val, 360.0/(1<<31-1))
 		})
 	case 15:
 		// Tag 15: Sensor True Altitude
@@ -209,7 +210,7 @@ func (p *KLVParser) processTag(tag uint8, value []byte) {
 	case 19:
 		// Tag 19: Sensor Relative Elevation Angle
 		processValue(int(tag), value, func(val []byte) *float64 {
-			return extractScaledInt16(val, 20.0/32767.0)
+			return extractScaledInt16(val, 40.0/65535.0)
 		})
 	case 20:
 		// Tag 20: Sensor Relative Roll Angle
@@ -330,7 +331,7 @@ func (p *KLVParser) processTag(tag uint8, value []byte) {
 	case 40:
 		// Tag 40: Platform Sideslip Angle
 		processValue(int(tag), value, func(val []byte) *float64 {
-			return extractScaledInt16(val, 20.0/32767.0)
+			return extractScaledInt16(val, 40.0/65535.0)
 		})
 	case 41:
 		// Tag 41: Airfield Barometric Pressure
@@ -361,14 +362,14 @@ func (p *KLVParser) processTag(tag uint8, value []byte) {
 			return nil
 		})
 	case 45:
-		// Tag 45: Ground Range
+		// Tag 45: Target Error Estimate - CE90
 		processValue(int(tag), value, func(val []byte) *float64 {
-			return extractScaledUint16(val, 0.0625)
+			return extractScaledUint16(val, 4095.0/65535.0) // Resolution of 0.0624 meters
 		})
 	case 46:
-		// Tag 46: Platform Fuel Remaining
+		// Tag 46: Target Error Estimate - LE90
 		processValue(int(tag), value, func(val []byte) *float64 {
-			return extractScaledUint16(val, 0.0625)
+			return extractScaledUint16(val, 4095.0/65535.0) // Resolution of 0.0625 meters
 		})
 	case 47:
 		// Tag 47: Platform Call Sign
@@ -396,7 +397,7 @@ func (p *KLVParser) processTag(tag uint8, value []byte) {
 	case 50:
 		// Platform Angle of Attack
 		processValue(int(tag), value, func(val []byte) *float64 {
-			return extractScaledInt16(val, 1.0)
+			return extractScaledInt16(val, 40.0/65535.0)
 		})
 	case 51:
 		// Platform Vertical Speed
@@ -589,7 +590,7 @@ func (p *KLVParser) processTag(tag uint8, value []byte) {
 	case 80:
 		// Sensor East Velocity
 		processValue(int(tag), value, func(val []byte) *float64 {
-			return extractScaledInt16(val, 1.0)
+			return extractScaledInt16(val, 655.34/65535.0)
 		})
 	case 81:
 		// Image Horizon Pixel Pack
@@ -673,9 +674,9 @@ func (p *KLVParser) processTag(tag uint8, value []byte) {
 			meta.Value = val
 		}
 	case 96:
-		// Target Width Extended
+		// Tag 96: Target Width Extended
 		processValue(int(tag), value, func(val []byte) *float64 {
-			return extractScaledUint32(val, 1.0)
+			return extractIMAPB(val)
 		})
 	case 97:
 		// Range Image Local Set
@@ -720,19 +721,21 @@ func (p *KLVParser) processTag(tag uint8, value []byte) {
 			meta.Value = val
 		}
 	case 103:
-		// Density Altitude Extended
+		// Tag 103: Density Altitude Extended
 		processValue(int(tag), value, func(val []byte) *float64 {
-			return extractScaledUint32(val, 1.0)
+			return extractIMAPB(val)
 		})
+
 	case 104:
-		// Sensor Ellipsoid Height Extended
+		// Tag 104: Sensor Ellipsoid Height Extended
 		processValue(int(tag), value, func(val []byte) *float64 {
-			return extractScaledUint32(val, 1.0)
+			return extractIMAPB(val)
 		})
+
 	case 105:
-		// Alternate Platform Ellipsoid Height Extended
+		// Tag 105: Alternate Platform Ellipsoid Height Extended
 		processValue(int(tag), value, func(val []byte) *float64 {
-			return extractScaledUint32(val, 1.0)
+			return extractIMAPB(val)
 		})
 	case 106:
 		// Stream Designator
@@ -756,9 +759,9 @@ func (p *KLVParser) processTag(tag uint8, value []byte) {
 			meta.Value = val
 		}
 	case 109:
-		// Range to Recovery Location
+		// Tag 109: Range to Recovery Location
 		processValue(int(tag), value, func(val []byte) *float64 {
-			return extractScaledUint32(val, 1.0)
+			return extractIMAPB(val)
 		})
 	case 110:
 		// Time Airborne
@@ -779,19 +782,21 @@ func (p *KLVParser) processTag(tag uint8, value []byte) {
 			return nil
 		})
 	case 112:
-		// Platform Course Angle
+		// Tag 112: Platform Course Angle
 		processValue(int(tag), value, func(val []byte) *float64 {
-			return extractScaledUint32(val, 1.0)
+			return extractIMAPB(val)
 		})
+
 	case 113:
-		// Altitude Above Ground Level (AGL)
+		// Tag 113: Altitude Above Ground Level (AGL)
 		processValue(int(tag), value, func(val []byte) *float64 {
-			return extractScaledUint32(val, 1.0)
+			return extractIMAPB(val)
 		})
+
 	case 114:
-		// Radar Altimeter
+		// Tag 114: Radar Altimeter
 		processValue(int(tag), value, func(val []byte) *float64 {
-			return extractScaledUint32(val, 1.0)
+			return extractIMAPB(val)
 		})
 	case 115:
 		// Control Command
@@ -808,25 +813,29 @@ func (p *KLVParser) processTag(tag uint8, value []byte) {
 			meta.Value = val
 		}
 	case 117:
-		// Sensor Azimuth Rate
+		// Tag 117: Sensor Azimuth Rate
 		processValue(int(tag), value, func(val []byte) *float64 {
-			return extractScaledUint32(val, 1.0)
+			return extractIMAPB(val)
 		})
+
 	case 118:
-		// Sensor Elevation Rate
+		// Tag 118: Sensor Elevation Rate
 		processValue(int(tag), value, func(val []byte) *float64 {
-			return extractScaledUint32(val, 1.0)
+			return extractIMAPB(val)
 		})
+
 	case 119:
-		// Sensor Roll Rate
+		// Tag 119: Sensor Roll Rate
 		processValue(int(tag), value, func(val []byte) *float64 {
-			return extractScaledUint32(val, 1.0)
+			return extractIMAPB(val)
 		})
+
 	case 120:
-		// On-board MI Storage Percent Full
+		// Tag 120: On-board MI Storage Percent Full
 		processValue(int(tag), value, func(val []byte) *float64 {
-			return extractScaledUint32(val, 1.0)
+			return extractIMAPB(val)
 		})
+
 	case 121:
 		// Active Wavelength List
 		val := extractHex(value)
@@ -915,9 +924,9 @@ func (p *KLVParser) processTag(tag uint8, value []byte) {
 			return nil
 		})
 	case 132:
-		// Transmission Frequency
+		// Tag 132: Transmission Frequency
 		processValue(int(tag), value, func(val []byte) *float64 {
-			return extractScaledUint32(val, 1.0)
+			return extractIMAPB(val)
 		})
 	case 133:
 		// On-board MI Storage Capacity
@@ -929,9 +938,9 @@ func (p *KLVParser) processTag(tag uint8, value []byte) {
 			return nil
 		})
 	case 134:
-		// Zoom Percentage
+		// Tag 134: Zoom Percentage
 		processValue(int(tag), value, func(val []byte) *float64 {
-			return extractScaledUint32(val, 1.0)
+			return extractIMAPB(val)
 		})
 	case 135:
 		// Communications Method

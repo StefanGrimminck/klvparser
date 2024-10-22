@@ -121,3 +121,27 @@ func extractHex(value []byte) *string {
 	}
 	return nil
 }
+
+// extractIMAPB decodes IMAPB-encoded values and applies scaling based on the data size.
+func extractIMAPB(val []byte) *float64 {
+	if len(val) == 0 {
+		return nil
+	}
+
+	length := val[0]
+	if length == 0 || int(length) > len(val)-1 {
+		return nil
+	}
+
+	data := val[1 : 1+length]
+
+	result := uint64(0)
+	for i := 0; i < len(data); i++ {
+		result = (result << 8) | uint64(data[i])
+	}
+
+	maxVal := (1 << (8 * length)) - 1
+	scaledValue := float64(result) / float64(maxVal)
+
+	return &scaledValue
+}
