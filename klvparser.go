@@ -295,9 +295,8 @@ func (p *KLVParser) processTag(tag uint8, value []byte) {
 			return nil
 		})
 	case 35:
-		// Tag 35: Target Error Estimate LE90
 		processValue(int(tag), value, func(val []byte) *float64 {
-			return extractScaledUint16(val, 360.0/65535.0)
+			return extractScaledUint16(val, 4095.0/65535.0)
 		})
 	case 36:
 		// Tag 36: Generic Flag Data 01
@@ -394,14 +393,13 @@ func (p *KLVParser) processTag(tag uint8, value []byte) {
 			meta.Value = val
 		}
 	case 50:
-		// Platform Angle of Attack
 		processValue(int(tag), value, func(val []byte) *float64 {
-			return extractScaledInt16(val, 40.0/65535.0)
+			return extractScaledInt16(val, 40.0/65534.0)
 		})
 	case 51:
 		// Platform Vertical Speed
 		processValue(int(tag), value, func(val []byte) *float64 {
-			return extractScaledInt16(val, 1.0)
+			return extractScaledInt16(val, 360.0/65534.0)
 		})
 	case 52:
 		// Platform Sideslip Angle
