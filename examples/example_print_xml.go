@@ -4,10 +4,11 @@ import (
 	"bufio"
 	"encoding/xml"
 	"fmt"
-	"github.com/StefanGrimminck/klvparser"
 	"io"
 	"os"
 	"sort"
+
+	"github.com/StefanGrimminck/klvparser"
 )
 
 // XMLTag represents the structure for printing KLV tags as XML.
@@ -89,7 +90,7 @@ func main() {
 		err = parser.ProcessChunk(chunk[:n])
 		if err != nil {
 			fmt.Println("Error processing chunk:", err)
-			return
+			continue
 		}
 	}
 }
