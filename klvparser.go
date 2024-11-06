@@ -7,7 +7,6 @@ import (
 )
 
 // MISB0601UL represents the Universal Label for MISB ST 0601 metadata.
-// This constant is used to identify the start of a KLV packet containing MISB 0601 data.
 var MISB0601UL = []byte{0x06, 0x0E, 0x2B, 0x34, 0x02, 0x0B, 0x01, 0x01, 0x0E, 0x01, 0x03, 0x01, 0x01, 0x00, 0x00, 0x00}
 
 // KLVParser is responsible for parsing MISB 0601 KLV data.
@@ -412,7 +411,7 @@ func (p *KLVParser) processTag(tag uint8, value []byte) {
 	case 53:
 		// Airfield Barometric Pressure
 		processValue(int(tag), value, func(val []byte) *float64 {
-			return extractScaledUint16(val, 1.0)
+			return extractScaledUint16(val, 5000.0/65535.0)
 		})
 	case 54:
 		// Airfield Elevation
